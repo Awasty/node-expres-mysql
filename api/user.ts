@@ -9,7 +9,7 @@ router.use(express.json());
 
 router.use(express.urlencoded({ extended: true }));
 
-โชว์หมด
+// โชว์หมด
 router.get("/", (req, res)=>{
     if (req.query.id) {
         const id = req.query.id;
