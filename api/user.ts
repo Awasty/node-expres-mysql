@@ -9,23 +9,23 @@ router.use(express.json());
 
 router.use(express.urlencoded({ extended: true }));
 
-// โชว์หมด
-// router.get("/", (req, res)=>{
-//     if (req.query.id) {
-//         const id = req.query.id;
-//         const name = req.query.name;
-//         res.send("Method GET in user.ts with" + id);
-//     }else{
-//       const sql = 'select * from user';
-//       conn.query(sql, (err,result)=>{
-//         if (err) {
-//             res.status(400).json(err);
-//         } else {
-//             res.json(result);
-//         }
-//       })
-//     }
-// });
+โชว์หมด
+router.get("/", (req, res)=>{
+    if (req.query.id) {
+        const id = req.query.id;
+        const name = req.query.name;
+        res.send("Method GET in user.ts with" + id);
+    }else{
+      const sql = 'select * from user';
+      conn.query(sql, (err,result)=>{
+        if (err) {
+            res.status(400).json(err);
+        } else {
+            res.json(result);
+        }
+      })
+    }
+});
 
 // Register
 router.post("/add", (req, res) => {
