@@ -68,8 +68,8 @@ router.put("/", (req, res) => {
                 res.status(400).json(err);
             } else {
                 if (result.length >= 2) {
-                    let player1Rating = result[0].rating;
-                    let player2Rating = result[1].rating;
+                    let player1Rating = result[1].rating;
+                    let player2Rating = result[0].rating;
                     // let player1Rating = 3000; // เราสลับตำแหน่ง player1 และ player2 เพื่อให้ player2 ชนะ
                     // let player2Rating = 2600;
                     // คำนวณคะแนน ELO rating ใหม่
