@@ -24,13 +24,13 @@ router.get("/count", (req, res)=>{
                 
                 // อัปเดตค่า vote_count ในฐานข้อมูลโดยเพิ่มขึ้นอีก 1
                 // const updateSql = "UPDATE vote SET vote_count = ?, date = ? WHERE mid = ?";
-                const updateSql = "UPDATE vote SET vote_count = ? + 1, date = DATE(NOW()) WHERE mid = ?";
+                const updateSql = "UPDATE vote SET vote_count = ? , date = DATE(NOW()) WHERE mid = ?";
 
                 // const today: Date = new Date();
                 // const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'numeric', year: 'numeric' };
                 // const formattedDate: string = today.toLocaleDateString('en-US', options);
                 // const currentDate = new Date().toISOString(); // ใช้เวลาปัจจุบันในรูปแบบ ISO string
-                conn.query(updateSql, [currentVoteCount , id], (err, result) => {
+                conn.query(updateSql, [currentVoteCount+1 , id], (err, result) => {
                     if (err) {
                         res.status(400).json(err);
                     } else {
