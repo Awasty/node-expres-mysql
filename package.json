@@ -1,4 +1,11 @@
 {
+  "name": "node-ex",
+  "version": "1.0.0",
+  "main": "server.ts",
+  "scripts": {
+    "start": "node dist/server.js",
+    "postinstall": "tsc"
+  },
   "devDependencies": {
     "@types/mysql": "^2.15.25",
     "ts-node-dev": "^2.0.0",
