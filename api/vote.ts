@@ -119,10 +119,10 @@ router.post("/", (req, res) => {
                                     const response = {
                                         0: {
                                             eloWin: eloChangeWin,
-                                            newWin: raNew+"A",
+                                            newWin: raNew,
                                             Ea: expectedScoreW,
                                             eloLost: eloChangeLost,
-                                            newLost: rbNew+"A",
+                                            newLost: rbNew,
                                             Eb: expectedScorel,
                                             K: kFactor
                                         }
@@ -191,10 +191,10 @@ router.post("/", (req, res) => {
                                     const response = {
                                         0: {
                                             eloWin: eloChangeWin,
-                                            newWin: raNew+"B",
+                                            newWin: raNew,
                                             Ea: expectedScoreW,
                                             eloLost: eloChangeLost,
-                                            newLost: rbNew+"B",
+                                            newLost: rbNew,
                                             Eb: expectedScorel,
                                             K: kFactor
                                         }
