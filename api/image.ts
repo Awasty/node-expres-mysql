@@ -129,6 +129,68 @@ router.get("/", (req, res) => {
 });
 
 
+router.get("/deleteImage", (req, res) => {
+    const uid = req.query.uid;
+    const mid = req.query.mid;
+
+    if (!uid || !mid) {
+        res.status(400).send("Both UID and MID parameters are required.");
+        return;
+    }
+
+    // ลบข้อมูลจากตาราง "vote" ก่อน
+    const deleteVoteSQL = 'DELETE FROM vote WHERE mid = ?';
+    conn.query(deleteVoteSQL, [mid], (err, voteResult) => {
+        if (err) {
+            res.status(400).json(err);
+        } else {
+            // เมื่อลบข้อมูลจากตาราง "vote" เสร็จสิ้น จึงลบข้อมูลจากตาราง "image"
+            const deleteImageSQL = 'DELETE FROM image WHERE uid = ? and mid = ?';
+            conn.query(deleteImageSQL, [uid, mid], (err, imageResult) => {
+                if (err) {
+                    res.status(400).json(err);
+                } else {
+                    res.json({ success: true, message: "Delete successful" });
+                }
+            });
+        }
+    });
+});
 
 
+router.post("/updateImage", (req, res) => {
+    const { mid, url, caption } = req.body;
 
+    if (!mid) {
+        res.status(400).send("Missing parameters.");
+        return;
+    }
+
+    let updateImageSQL = 'UPDATE image SET ';
+    const params = [];
+    
+    if (url) {
+        updateImageSQL += 'url = ?, ';
+        params.push(url);
+    }
+    
+    if (caption) {
+        updateImageSQL += 'caption = ? ';
+        params.push(caption);
+    }
+    
+    // ตัด comma ที่เกิดจากการเช็คเงื่อนไขล่าสุดออกจาก query
+    updateImageSQL = updateImageSQL.replace(/,\s*$/, '');
+
+    updateImageSQL += ' WHERE mid = ?';
+    params.push(mid);
+
+    // อัปเดตข้อมูลในตาราง "image"
+    conn.query(updateImageSQL, params, (err, result) => {
+        if (err) {
+            res.status(400).json(err);
+        } else {
+            res.json({ success: true, message: "Update successful" });
+        }
+    });
+});
