@@ -133,3 +133,47 @@ router.post("/edit", (req, res) => {
   });
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+// // POST /user
+// router.post("/", (req, res)=>{
+//     let body = req.body; 
+//     res.send("Get in user.ts body: " + JSON.stringify(body));
+
+// });
+
+// router.get("/search/fields", (req, res)=>{
+//     const id = req.query.id;
+//     // conts name = req,query.name;
+//     const sql = "select * from user where "+" (idx IS NULL OR idx = ?) OR (name IS NULL OR name like ?)";
+//     conn.query(sql, [id, "s", name, "s"], (err, result)=>{
+//         if (err) {
+//             res.json(err);
+//         } else {
+//             res.json(result);
+//         }
+//     })
+// });
+
+// router.get("/search/mon", (req, res)=>{
+//     const id =req.query.id;
+//     const price = req.query.price;
+//     const sql = "select * from user where "+" (idx IS NULL OR idx = ?) OR (name IS NULL OR name like ?)";
+//     conn.query(sql, [id, "s", name, "s",price], (err, result)=>{
+//         if (err) {
+//             res.json(err);
+//         } else {
+//             res.json(result);
+//         }
+//     })
+// });

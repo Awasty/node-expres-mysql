@@ -13,7 +13,7 @@ router.use(express.urlencoded({ extended: true }));
 router.get("/count", (req, res)=>{
     const id = req.query.mid as string;
     // ดึงค่าปัจจุบันของ vote_count จากฐานข้อมูล
-    console.log(id);
+    // console.log(id);
     const getSql = "SELECT vote_count FROM vote WHERE mid = ?";
     conn.query(getSql, [id], (err, result) => {
         if (err) {
@@ -61,46 +61,76 @@ router.post("/", (req, res) => {
         mid2: req.body.mid2,
         win: req.body.win,
     };
+    const kFactor = 32;
     if (details.win == details.mid1) {
         const sqlCheck = 'SELECT rating FROM vote WHERE mid = ? OR mid = ?';
         conn.query(sqlCheck, [details.mid1, details.mid2], (err, result) => {
             if (err) {
                 res.status(400).json(err);
             } else {
-               
+                
                 if (result.length >= 2) {
-                    let player1Rating = result[0].rating;
-                    let player2Rating = result[1].rating;
+                    let ra = result[0].rating;
+                    let rb = result[1].rating;
                     // console.log(result[0].rating);
-                    // let player1Rating = 3000;
-                    // let player2Rating = 2600;
+                    // let ra = 3000;
+                    // let rb = 2600;
                     // คำนวณคะแนน ELO rating ใหม่
-                    let eloChangeWinner = calculateEloRatingWin(player1Rating, player2Rating);
-                    let eloChangeLoser = calculateEloRatingLost(player1Rating, player2Rating);
-                    // console.log(eloChangeWinner)
-                    // console.log(eloChangeLoser)
-                    let player1NewRating = Math.round(player1Rating + eloChangeWinner);
-                    let player2NewRating = Math.round(player2Rating + eloChangeLoser);
-                    console.log(eloChangeLoser);
+                   
+                    // let eloChangeWinner = calculateEloRatingWin(ra, rb,kFactor);
+                    // let eloChangeLoser = calculateEloRatingLost(ra, rb,kFactor);
+                    // let ra = result[0].rating;
+                    // let rb = result[1].rating;
+                    const expectedScoreW = 1 / (1 + Math.pow(10, (rb - ra) / 400));
+                    console.log("Ea",expectedScoreW);
+                    const eloChangeWin = kFactor * (1 - expectedScoreW); // ไม่ต้องลบ (ra - rb) / 2 ออก
+                    console.log("Pa",eloChangeWin);
+                    
+                    const expectedScorel = 1 / (1 + Math.pow(10, (ra - rb) / 400));
+                    console.log("Eb",expectedScorel);
+                    const eloChangeLost = kFactor * (0 - expectedScorel) 
+                    console.log("Pb",eloChangeLost);
+                    console.log("Ra",ra);
+                    console.log("Rb",rb);
+                    let raNew = ra + Math.round(eloChangeWin);
+                    let rbNew = rb + Math.round(eloChangeLost);
+                    console.log(raNew)
+                    console.log(rbNew)
+                    console.log("===========================")
+
+                    // let raNew = Math.round(ra + eloChangeWinner);
+                    // let rbNew = Math.round(rb + eloChangeLoser);
+                    // console.log(eloChangeLoser);
                     const sqlUpdateMid1 = "UPDATE vote SET rating = ? WHERE mid = ?";
                     const sqlUpdateMid2 = "UPDATE vote SET rating = ? WHERE mid = ?";
 
                     // Update mid1
-                    conn.query(sqlUpdateMid1, [player1NewRating, details.mid1], (errorMid1, resultMid1) => {
+                    conn.query(sqlUpdateMid1, [raNew, details.mid1], (errorMid1, resultMid1) => {
                         if (errorMid1) {
                             res.status(400).json({ status: false, message: "Failed to update ratings for mid1gg", error: errorMid1 });
                         } else {
                             // Update mid2
-                            conn.query(sqlUpdateMid2, [player2NewRating, details.mid2], (errorMid2, resultMid2) => {
+                            conn.query(sqlUpdateMid2, [rbNew, details.mid2], (errorMid2, resultMid2) => {
                                 if (errorMid2) {
                                     res.status(400).json({ status: false, message: "Failed to update ratings for mid2", error: errorMid2 });
                                 } else {
-                                    res.json({ status: true, message: "Ratings updated successfully for both mid1 and mid2" ,
-                                    eloChangeWinner: player1NewRating ,
-                                    eloWin: eloChangeWinner,
-                                    eloChangeLoser: player2NewRating,
-                                    eloLost: eloChangeLoser,
-                                });
+                            
+                                
+                                    const response = {
+                                        0: {
+                                            eloWin: eloChangeWin,
+                                            newWin: raNew,
+                                            Ea: expectedScoreW,
+                                            eloLost: eloChangeLost,
+                                            newLost: rbNew,
+                                            Eb: expectedScorel,
+                                            K: kFactor
+                                        }
+                                    };
+                                    
+                                    
+                                    res.json(response);
+                                    
                                 }
                             });
                         }
@@ -120,35 +150,58 @@ router.post("/", (req, res) => {
                 res.status(400).json(err);
             } else {
                 if (result.length >= 2) {
-                    let player1Rating = result[1].rating;
-                    let player2Rating = result[0].rating;
+                    let ra = result[1].rating;
+                    let rb = result[0].rating;
                     // คำนวณคะแนน ELO rating ใหม่
-                    let eloChangeWinner = calculateEloRatingWin(player1Rating, player2Rating);
-                    let eloChangeLoser = calculateEloRatingLost(player1Rating, player2Rating);
+                    // let eloChangeWinner = calculateEloRatingWin(ra, rb,kFactor);
+                    // let eloChangeLoser = calculateEloRatingLost(ra, rb,kFactor);
 
-                    let player1NewRating = Math.round(player1Rating + eloChangeWinner);
-                    let player2NewRating = Math.round(player2Rating + eloChangeLoser);
+                    // let raNew = Math.round(ra + eloChangeWinner);
+                    // let rbNew = Math.round(rb + eloChangeLoser);
+
+                    // let ra = result[1].rating;
+                    // let rb = result[0].rating;
+                    const expectedScoreW = 1 / (1 + Math.pow(10, (rb - ra) / 400));
+                    console.log("Ea",expectedScoreW);
+                    const eloChangeWin = kFactor * (1 - expectedScoreW); // ไม่ต้องลบ (ra - rb) / 2 ออก
+                    console.log("Pa",eloChangeWin);
+                    
+                    const expectedScorel = 1 / (1 + Math.pow(10, (ra - rb) / 400));
+                    console.log("Eb",expectedScorel);
+                    const eloChangeLost = kFactor * (0 - expectedScorel) 
+                    console.log("Pb",eloChangeLost);
+
+                    let raNew = ra + Math.round(eloChangeWin);
+                    let rbNew = rb + Math.round(eloChangeLost);
 
                     const sqlUpdateMid1 = "UPDATE vote SET rating = ? WHERE mid = ?";
                     const sqlUpdateMid2 = "UPDATE vote SET rating = ? WHERE mid = ?";
     
                     // Update mid1
-                    conn.query(sqlUpdateMid1, [player1NewRating, details.mid2], (errorMid1, resultMid1) => { // เราสลับค่า details.mid1 และ details.mid2
+                    conn.query(sqlUpdateMid1, [raNew, details.mid2], (errorMid1, resultMid1) => { // เราสลับค่า details.mid1 และ details.mid2
                         if (errorMid1) {
                             res.status(400).json({ status: false, message: "Failed to update ratings for mid1", error: errorMid1 });
                         } else {
                             // Update mid2
-                            conn.query(sqlUpdateMid2, [player2NewRating, details.mid1], (errorMid2, resultMid2) => { // เราสลับค่า details.mid1 และ details.mid2
+                            conn.query(sqlUpdateMid2, [rbNew, details.mid1], (errorMid2, resultMid2) => { // เราสลับค่า details.mid1 และ details.mid2
                                 if (errorMid2) {
                                     res.status(400).json({ status: false, message: "Failed to update ratings for mid2", error: errorMid2 });
                                 } else {
-                                    res.json({ status: true, 
-                                        message: "Ratings updated successfully for both mid1 and mid2" ,
-                                        eloChangeWinner: player1NewRating ,
-                                        eloWin: eloChangeWinner,
-                                        eloChangeLoser: player2NewRating,
-                                        eloLost: eloChangeLoser,
-                                    });
+                                   
+                                    const response = {
+                                        0: {
+                                            eloWin: eloChangeWin,
+                                            newWin: raNew,
+                                            Ea: expectedScoreW,
+                                            eloLost: eloChangeLost,
+                                            newLost: rbNew,
+                                            Eb: expectedScorel,
+                                            K: kFactor
+                                        }
+                                    };
+                                    
+                                    
+                                    res.json(response);
                                 }
                             });
                         }
@@ -163,20 +216,18 @@ router.post("/", (req, res) => {
     
 });
 
-function calculateEloRatingWin(ra: number, rb: number) {
-    const kFactor = 32;
-    const expectedScoreA = 1 / (1 + Math.pow(10, (rb - ra) / 400));
-    console.log(expectedScoreA);
-    const eloChangeWin = kFactor * (1 - expectedScoreA); // ไม่ต้องลบ (ra - rb) / 2 ออก
-    // console.log(eloChangeWin);
+function calculateEloRatingWin(ra: number, rb: number,kFactor: number) {
+    const expectedScoreW = 1 / (1 + Math.pow(10, (rb - ra) / 400));
+    console.log("Ea",expectedScoreW);
+    const eloChangeWin = kFactor * (1 - expectedScoreW); // ไม่ต้องลบ (ra - rb) / 2 ออก
+    console.log("Pa",eloChangeWin);
     return eloChangeWin;
 }
 
-function calculateEloRatingLost(ra: number, rb: number) {
-    const kFactor = 32;
+function calculateEloRatingLost(ra: number, rb: number,kFactor: number) {
     const expectedScorel = 1 / (1 + Math.pow(10, (ra - rb) / 400));
-    console.log(expectedScorel);
+    console.log("Eb",expectedScorel);
     const eloChangeLost = kFactor * (0 - expectedScorel) 
-    // console.log(eloChangeLost);
+    console.log("Pb",eloChangeLost);
     return eloChangeLost;
 }
