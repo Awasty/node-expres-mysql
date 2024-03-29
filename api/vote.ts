@@ -150,8 +150,8 @@ router.post("/", (req, res) => {
                 res.status(400).json(err);
             } else {
                 if (result.length >= 2) {
-                    let ra = result[1].rating;
-                    let rb = result[0].rating;
+                    let ra = result[0].rating;
+                    let rb = result[1].rating;
                     // คำนวณคะแนน ELO rating ใหม่
                     // let eloChangeWinner = calculateEloRatingWin(ra, rb,kFactor);
                     // let eloChangeLoser = calculateEloRatingLost(ra, rb,kFactor);
