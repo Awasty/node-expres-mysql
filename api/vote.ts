@@ -90,13 +90,13 @@ router.post("/", (req, res) => {
                     console.log("Eb",expectedScorel);
                     const eloChangeLost = kFactor * (0 - expectedScorel) 
                     console.log("Pb",eloChangeLost);
-                    console.log("Ra",ra);
-                    console.log("Rb",rb);
+                    // console.log("Ra",ra);
+                    // console.log("Rb",rb);
                     let raNew = ra + Math.round(eloChangeWin);
                     let rbNew = rb + Math.round(eloChangeLost);
-                    console.log(raNew)
-                    console.log(rbNew)
-                    console.log("===========================")
+                    // console.log(raNew)
+                    // console.log(rbNew)
+                    // console.log("===========================")
 
                     // let raNew = Math.round(ra + eloChangeWinner);
                     // let rbNew = Math.round(rb + eloChangeLoser);
@@ -119,10 +119,10 @@ router.post("/", (req, res) => {
                                     const response = {
                                         0: {
                                             eloWin: eloChangeWin,
-                                            newWin: raNew,
+                                            newWin: raNew+"A",
                                             Ea: expectedScoreW,
                                             eloLost: eloChangeLost,
-                                            newLost: rbNew,
+                                            newLost: rbNew+"A",
                                             Eb: expectedScorel,
                                             K: kFactor
                                         }
@@ -191,10 +191,10 @@ router.post("/", (req, res) => {
                                     const response = {
                                         0: {
                                             eloWin: eloChangeWin,
-                                            newWin: raNew,
+                                            newWin: raNew+"B",
                                             Ea: expectedScoreW,
                                             eloLost: eloChangeLost,
-                                            newLost: rbNew,
+                                            newLost: rbNew+"B",
                                             Eb: expectedScorel,
                                             K: kFactor
                                         }
