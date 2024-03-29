@@ -53,6 +53,25 @@ router.get("/7day", (req, res)=>{
 
 
 
+router.get("/", (req, res)=>{
+  if (req.query.id) {
+      const id = req.query.id;
+      const name = req.query.name;
+      res.send("Method GET in user.ts with" + id);
+  }else{
+    const sql = 'select * from vote';
+    conn.query(sql, (err,result)=>{
+      if (err) {
+          res.status(400).json(err);
+      } else {
+          res.json(result);
+      }
+    })
+  }
+});
+
+
+
 
 
 

@@ -2,6 +2,7 @@ import express from "express";
 import { router as image} from "./api/image";
 import { router as user} from "./api/user";
 import { router as vote} from "./api/vote";
+import { router as rating} from "./api/rating";
 import bodyParser from "body-parser";
 const cors = require('cors');
 
@@ -13,5 +14,6 @@ app.use(bodyParser.json());
 app.use("/image", image);
 app.use("/user", user);
 app.use("/vote", vote);
+app.use("/rating", rating);
 
 
