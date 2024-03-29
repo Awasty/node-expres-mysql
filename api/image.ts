@@ -124,9 +124,10 @@ router.get("/", (req, res) => {
             }
         });
     } else {
-        res.status(400).send("UID parameter is required.");
+        res.status(400).send("UID parameter is required.d");
     }
 });
+
 
 
 
